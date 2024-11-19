@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
+import 'screens/login_screen.dart'; // Pastikan path ke file login_screen benar
 
 void main() {
   runApp(BrainlyApp());
@@ -14,7 +14,7 @@ class BrainlyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: LoginScreen(), // Halaman awal adalah LoginScreen
     );
   }
 }

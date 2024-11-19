@@ -6,6 +6,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Menentukan jumlah kolom berdasarkan lebar layar
+    int crossAxisCount = MediaQuery.of(context).size.width > 600 ? 3 : 2; // 3 kolom di layar yang lebih lebar
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5FA),
       body: SingleChildScrollView( // Membuat halaman scrollable
@@ -30,8 +33,8 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 40), // Memberi jarak lebih besar
                   GridView(
                     shrinkWrap: true,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // Mengurangi jumlah kolom agar item lebih besar
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount, // Menggunakan variabel crossAxisCount
                       childAspectRatio: 1, // Menjaga rasio item agar lebih persegi
                       crossAxisSpacing: 20, // Memberi lebih banyak jarak antar kolom
                       mainAxisSpacing: 20, // Memberi lebih banyak jarak antar baris
@@ -45,13 +48,12 @@ class HomeScreen extends StatelessWidget {
                       _buildGridItem(context, 'img/geo.jpg', "Geografi"),
                       _buildGridItem(context, 'img/prak.png', "Prakarya"),
                       _buildGridItem(context, 'img/agama.png', "Agama"),
-
                     ],
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20), // Menambah jarak di bagian bawah
+            const SizedBox(height: 40), // Menambah jarak di bagian bawah
           ],
         ),
       ),
@@ -89,6 +91,79 @@ class HomeScreen extends StatelessWidget {
               imagePath, // Mengganti ikon dengan gambar dari asset
               width: 60, // Mengatur ukuran gambar
               height: 60,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(Icons.error, size: 60); // Menampilkan ikon error jika gambar tidak ditemukan
+              },
+            ),
+            const SizedBox(height: 10),
+            Text(
+              label,
+              style: const TextStyle(color: Colors.black, fontSize: 16),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CategoryGrid extends StatelessWidget {
+  final List<Map<String, String>> categories;
+
+  const CategoryGrid({Key? key, required this.categories}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    int crossAxisCount = MediaQuery.of(context).size.width > 600 ? 3 : 2;
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(), // Mencegah scroll di dalam GridView
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        childAspectRatio: 1,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
+      ),
+      itemCount: categories.length,
+      itemBuilder: (context, index) {
+        return _buildGridItem(context, categories[index]['imagePath']!, categories[index]['label']!);
+      },
+    );
+  }
+
+  Widget _buildGridItem(BuildContext context, String imagePath, String label) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => QuestionScreen(subject: label),
+          ),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 6,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              imagePath,
+              width: 60,
+              height: 60,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(Icons.error, size: 60);
+              },
             ),
             const SizedBox(height: 10),
             Text(
